@@ -1,0 +1,27 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { getPreviewPageBySlug } from "../../sanity/fetch";
+import Content from "../../components/Content.astro";
+
+// Validate authParam
+const auth = Astro.url.searchParams.get("auth");
+const authSecret = "ASkakjsdoajsdoi";
+if (auth !== authSecret) {
+    return Astro.redirect("/");
+}
+
+// Fetch data & data == null redirect 404
+const { slug } = Astro.params;
+const data = await getPreviewPageBySlug(slug);
+if (!data) {
+    return new Response(null, {
+        status: 404,
+    });
+}
+
+const isAjax = Astro.url.searchParams.get("ajax") ? true : false;
+---
+
+<Layout isAjax={isAjax} preview={true}>
+    <Content title={data.title} />
+</Layout>

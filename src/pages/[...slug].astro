@@ -1,0 +1,22 @@
+---
+export const prerender = true;
+import Layout from "../layouts/Layout.astro";
+import { getPages } from "../sanity/fetch";
+
+export async function getStaticPaths() {
+    const pages = await getPages();
+
+    return pages.map((page) => {
+        return {
+            params: { slug: page.slug },
+            props: { data: page },
+        };
+    });
+}
+const { data } = Astro.props;
+---
+
+<Layout>
+    <h1>{data.title}</h1>
+    <h2>{import.meta.env.PUBLIC_PROJECT_ID}</h2>
+</Layout>
